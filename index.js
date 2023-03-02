@@ -20,6 +20,7 @@ async function run(){
         const doctorsCollection = client.db('doctorsCollection').collection('doctors');
         const bookingsCollection = client.db('bookingCollection').collection('bookings');
         const prescriptionCollection = client.db('prescriptions').collection('prescription')
+        const reportCollection = client.db('reports').collection('report')
       
 
 
@@ -64,6 +65,24 @@ async function run(){
             const prescriptions = await prescriptionCollection.find(query).toArray();
 
             res.send(prescriptions)
+            
+        })
+
+        //post user reports
+        app.post('/reports', async(req,res) =>{
+            const data = req.body;
+            const result = await reportCollection.insertOne(data);
+
+            res.send(result)
+        })
+
+        //get user specific reports
+        app.get('/reports', async (req, res) =>{
+            const email = req.query.email
+            const query = {email:email}
+            const reports = await reportCollection.find(query).toArray();
+
+            res.send(reports)
             
         })
 
