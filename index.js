@@ -52,10 +52,20 @@ async function run(){
         app.post('/prescription', async(req, res) =>{
             const data = req.body;
             const result = await prescriptionCollection.insertOne(data);
+            
 
-            res.send(result)
+            res.send(result);
         })
         
+        //get user specific prescription
+        app.get('/prescription', async (req, res) =>{
+            const email = req.query.email
+            const query = {email:email}
+            const prescriptions = await prescriptionCollection.find(query).toArray();
+
+            res.send(prescriptions)
+            
+        })
 
 
         // get all doctors
