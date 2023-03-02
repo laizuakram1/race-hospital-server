@@ -21,12 +21,14 @@ async function run(){
         const bookingsCollection = client.db('bookingCollection').collection('bookings');
         const prescriptionCollection = client.db('prescriptions').collection('prescription')
         const reportCollection = client.db('reports').collection('report')
+        const profileCollection = client.db('profiles').collection('profile')
       
 
 
         // //   get user specific booking appointments
         app.get('/bookings', async (req, res) =>{
-            const query = {}
+            const email = req.query.email;
+            const query = {email:email}
             const result = await bookingsCollection.find(query).toArray();
 
             res.send(result);
@@ -84,6 +86,22 @@ async function run(){
 
             res.send(reports)
             
+        })
+
+        //update user profile information
+        app.post('/profile', async(req, res) =>{
+            const data = req.body;
+            const result = await profileCollection.insertOne(data);
+
+            res.send(result)
+        })
+
+        //get user profile information
+        app.get('/profile', async(req, res) =>{
+            const query = {};
+            const result = await profileCollection.find(query).toArray();
+
+            res.send(result)
         })
 
 
