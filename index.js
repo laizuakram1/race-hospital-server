@@ -3,6 +3,10 @@ const express = require('express');
 const app = express();
 const cors = require('cors')
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+
+
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
@@ -23,7 +27,24 @@ async function run(){
         const reportCollection = client.db('reports').collection('report')
         const profileCollection = client.db('profiles').collection('profile')
       
+        //payment route start here
+        app.post('/create-payment-intent', async(req, res) =>{
+            const price = req.body.price;
+            const amount = price * 100;
 
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount:amount,
+                currency: "usd",
+                "payment_method_types": [
+                    "card"
+                  ]
+              });
+            
+              res.send({
+                clientSecret: paymentIntent.client_secret,
+              });
+            
+        })
 
         // //   get user specific booking appointments
         app.get('/bookings', async (req, res) =>{
