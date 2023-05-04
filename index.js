@@ -136,7 +136,7 @@ async function run(){
         })
 
 
-        // get all doctors
+        // get all doctors service in appointment page
         app.get('/doctors', async (req, res) => {
             const query = {};
             const result =await doctorsCollection.find(query).toArray();
