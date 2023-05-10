@@ -26,6 +26,7 @@ async function run(){
         const prescriptionCollection = client.db('prescriptions').collection('prescription')
         const reportCollection = client.db('reports').collection('report')
         const profileCollection = client.db('profiles').collection('profile')
+        const usersCollection = client.db('usersCollection').collection('users')
       
         //payment route start here
         app.post('/create-payment-intent', async(req, res) =>{
@@ -141,6 +142,13 @@ async function run(){
             const query = {};
             const result =await doctorsCollection.find(query).toArray();
       
+            res.send(result);
+          })
+
+          app.post('/users', async(req, res)=>{
+            const usersData = req.body;
+            const result = await usersCollection.insertOne(usersData);
+
             res.send(result);
           })
 
