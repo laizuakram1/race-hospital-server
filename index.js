@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
 const cors = require('cors')
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -46,6 +47,28 @@ async function run(){
               });
             
         })
+
+        // jwt token issue
+        app.get('/jwt', async(req, res) =>{
+            const email = req.query.email;
+            const query = {email:email};
+            const user = await usersCollection.findOne(query);
+
+            if(user){
+                const token = jwt.sign({email}, process.env.ACCESS_TOKEN,{ expiresIn: '3h' })
+                return res.send({accessToken:token})
+            }
+            res.status(403).send({accessToken:''})
+        }) 
+
+
+        //   save new users data
+        app.post('/users', async(req, res)=>{
+            const usersData = req.body;
+            const result = await usersCollection.insertOne(usersData);
+
+            res.send(result);
+          })
 
         // //   get user specific booking appointments
         app.get('/bookings', async (req, res) =>{
@@ -144,16 +167,7 @@ async function run(){
       
             res.send(result);
           })
-
-          app.post('/users', async(req, res)=>{
-            const usersData = req.body;
-            const result = await usersCollection.insertOne(usersData);
-
-            res.send(result);
-          })
-
-
-        
+  
     }
     finally{
         // await client.close();
