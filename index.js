@@ -30,6 +30,7 @@ const verifyJwtToken = (req, res, next)=>{
         if(err){
             return res.status(403).send({message:'forbidden access'})
         }
+        console.log(decoded)
         req.decoded = decoded;
         next();
     })
@@ -88,12 +89,13 @@ async function run(){
           })
 
         // //   get user specific all booking appointments(my appointments)
-        app.get('/bookings',verifyJwtToken, async (req, res) =>{
+        app.get('/bookings',async (req, res) =>{
             const email = req.query.email;
-            const decodedEmail = req.decoded.email;
+            /*const decodedEmail = req.decoded.email;
             if(email !== decodedEmail){
                 return res.status(403).send({message:'unauthorized access'})
-            }
+
+            }*/
             const query = {email:email}
             const result = await bookingsCollection.find(query).toArray();
             if(!result){
