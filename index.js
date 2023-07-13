@@ -46,6 +46,7 @@ async function run(){
         const reportCollection = client.db('reports').collection('report')
         const profileCollection = client.db('profiles').collection('profile')
         const usersCollection = client.db('usersCollection').collection('users')
+        const paymentsCollection = client.db('paymentCollection').collection('payments')
       
         //payment route start here
         app.post('/create-payment-intent', async(req, res) =>{
@@ -65,6 +66,14 @@ async function run(){
               });
             
         })
+
+        //store payment data
+        app.post('/payments', async(req, res)=>{
+            const paymentData = req.body;
+            const result = await paymentsCollection.insertOne(paymentData);
+
+            res.send(result)
+        }) 
 
         // jwt token issue
         app.get('/jwt', async(req, res) =>{
