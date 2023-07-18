@@ -71,7 +71,15 @@ async function run(){
         app.post('/payments', async(req, res)=>{
             const paymentData = req.body;
             const result = await paymentsCollection.insertOne(paymentData);
-
+            const id = paymentData.bookingId;
+            const filter = {_id: new ObjectId(id)};
+            const updatedDoc = {
+                $set:{
+                    paid:true,
+                    transactionId: paymentData.transactionId
+                }
+            }
+            const updatedResult = await bookingsCollection.updateOne(filter,updatedDoc);
             res.send(result)
         }) 
 
@@ -188,7 +196,8 @@ async function run(){
 
         //get user profile information
         app.get('/profile', async(req, res) =>{
-            const query = {};
+            // const email = req.query;
+            const query ={}
             const result = await profileCollection.find(query).toArray();
 
             res.send(result)
